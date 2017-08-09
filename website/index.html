@@ -52,6 +52,8 @@ body {
   <div class="center">
     <input id="prodId" />
     <button type="button" onclick="validateProduct()">Verify</button>
+	<text id="passed" style="display:none">"VERIFIED!</text>
+	<text id="failed" style="display:none">"ERROR!</text>
   </div>
 </div>
 
@@ -63,10 +65,10 @@ body {
 	    var productId = document.getElementById("prodId").value;
 		apigClient.legacyoneIdGet({'id': productId},'')
 			.then(function(result) {
-			    alert('Product ' + productId + ' Verified!')
+				document.getElementById("passed").style = "display:inline"
 				console.log('Success! ', result)
 			}).catch(function(result) {
-			    alert('Product ' + productId + ' is not a LegacyOne product')
+				document.getElementById("failed").style = "display:inline"
 				console.log('Error! ', result)
 			});
 	  }
