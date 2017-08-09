@@ -1,0 +1,77 @@
+<HTML>
+<head>
+
+    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+
+	
+</head>
+<style>
+#validator {
+    border-radius: 50px/15px;
+    background: #73AD21;
+    padding: 20px; 
+    width: 600px;
+    height: 150px; 
+}
+
+p {
+    font-size: 200%;
+	text-align: center;
+}
+
+input {
+	text-align: center;
+}
+
+.center {
+    margin: auto;
+    width: 60%;
+    border: 3px solid #73AD21;
+    padding: 10px;
+}
+
+body {
+	background-color: lightgrey;
+}
+
+</style>
+<body>
+
+<div id="validator" class="center">
+  <p> Please enter your LegacyOne product key </p>
+  <div class="center">
+    <input id="prodId" />
+    <button type="button" onclick="validateProduct()">Verify</button>
+  </div>
+</div>
+
+
+<script>
+	  var apigClient = apigClientFactory.newClient();
+	  	  
+	  function validateProduct() {
+	    var productId = document.getElementById("prodId").value;
+		apigClient.legacyoneIdGet({'id': productId},'')
+			.then(function(result) {
+			    alert('Product ' + productId + ' Verified!')
+				console.log('Success! ', result)
+			}).catch(function(result) {
+			    alert('Product ' + productId + ' is not a LegacyOne product')
+				console.log('Error! ', result)
+			});
+	  }
+	</script>
+
+</body>
+
+</HTML>

@@ -1,0 +1,123 @@
+
+Resources:
+  LegacyOneDatabase:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+       AttributeDefinitions: 
+         -
+           AttributeName: "Id"
+           AttributeType: "N"
+       KeySchema:
+         -
+           AttributeName: "Id"
+           KeyType: "HASH"
+       ProvisionedThroughput: 
+         ReadCapacityUnits: "1"
+         WriteCapacityUnits: "1"
+  ApiRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Path: '/'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'legacy-one-lambda-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action: 'dynamodb:GetItem'
+                Resource: 
+                  'Fn::Join':
+                      - '/'
+                      - - 'Fn::Join':
+                          - ':'
+                          - - 'arn:aws:dynamodb'
+                            - Ref: 'AWS::Region'
+                            - Ref: 'AWS::AccountId'
+                            - 'table'
+                        - Ref: LegacyOneDatabase
+                
+        - PolicyName: 'legacy-one-cloudwatch-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                  - 'logs:DescribeLogStreams'
+                Resource:
+                   - 'arn:aws:logs:*:*:*'
+  ApiLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Code:
+        S3Bucket: legacyone
+        S3Key: lambda_function.zip
+      Description: Validates LegacyOne product
+      Handler: lambda_function.handler
+      Runtime: python3.6
+      Role: !GetAtt ApiRole.Arn
+      MemorySize: 128
+      Timeout: 60
+      Environment:
+        Variables:
+          LegacyOneDatabase: !Ref LegacyOneDatabase
+  LambdaInvokePermission: 
+    Type: "AWS::Lambda::Permission"
+    Properties: 
+      FunctionName: 
+        Fn::GetAtt: 
+          - "ApiLambda"
+          - "Arn"
+      Action: "lambda:InvokeFunction"
+      Principal: "apigateway.amazonaws.com"
+  Api:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: LegacyOne
+      Description: API for LegacyOne product verification
+  LegacyOneProxyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref Api
+      ParentId: !GetAtt [Api, RootResourceId]
+      PathPart: 'legacyone'
+  LegacyOneIdResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref Api
+      ParentId: !Ref LegacyOneProxyResource
+      PathPart: '{id}'    
+  ApiGetMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      RestApiId: !Ref Api
+      ResourceId: !Ref LegacyOneIdResource
+      HttpMethod: 'GET'
+      AuthorizationType: 'NONE'
+      RequestParameters:
+        method.request.path.id : true
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambda.Arn}/invocations
+  ApiOptionsMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      RestApiId: !Ref Api
+      ResourceId: !Ref LegacyOneIdResource
+      HttpMethod: 'OPTIONS'
+      AuthorizationType: 'NONE'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambda.Arn}/invocations
+  
