@@ -8,7 +8,7 @@ dynamodb = boto3.client('dynamodb')
 
 default_headers = {
             'Content-Type': 'text/plain',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
             'Access-Control-Allow-Origin': '*'
         }
