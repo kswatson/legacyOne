@@ -16,6 +16,15 @@
 	
 </head>
 <style>
+
+header, footer {
+    padding: 1em;
+    color: white;
+    background-color: black;
+    clear: left;
+    text-align: center;
+}
+
 #validator {
     border-radius: 50px/15px;
     padding: 20px; 
@@ -23,8 +32,12 @@
     height: 150px; 
 }
 
-p {
+h2 {
     font-size: 200%;
+	text-align: center;
+}
+
+h1 {
 	text-align: center;
 }
 
@@ -34,28 +47,56 @@ input {
 
 .center {
     margin: auto;
-    width: 60%;
-    border: 3px solid #73AD21;
+    width: 50%;
     padding: 10px;
 }
-
-body {
-	background-color: lightgrey;
+img.displayed {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
 }
 
+html, body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+}
+
+.content {
+  padding: 10%;
+  flex: 1 0 auto;
+}
 </style>
 <body>
 
-<div id="validator" class="center">
-  <p> Please enter your LegacyOne product key </p>
-  <div class="center">
-    <input id="prodId" />
-    <button type="button" onclick="validateProduct()">Verify</button>
-	<img src="Checkmark.svg" height="15" width="20" id="passed" style="display:none"/>
-	<img src="Redx.png" height="15" width="20" id="failed" style="display:none"/>
+<header>
+  <img class="displayed" src="LegacyOneLogoCropped.png" />
+</header>
+
+<div class="content">
+  <div id="authCard">
+    <img class="displayed" src="AuthenticationCardBack.jpg" />
+  </div>
+  
+  <div id="validator" class="center">
+    <h2> Please Enter Your Authentication Code </h2>
+    <div class="center">
+      <input style="width:80%" id="prodId" />
+      <button type="button" onclick="validateProduct()">Verify</button>
+	  <img src="Checkmark.svg" height="15" width="20" id="passed" style="display:none"/>
+	  <img src="Redx.png" height="15" width="20" id="failed" style="display:none"/>
+    </div>
+    <div class="center">
+      <text id="verifiedText" style="display:none">Your authentication code is valid. Thank you for choosing Legacy One.</text>
+	  <text id="invalidText" style="display:none">Your authentication code is not valid.</text>
+    </div>
   </div>
 </div>
 
+<footer class="footer">Contact us at legacyonevaporizer@gmail.com</footer>
 
 <script>
 	  var apigClient = apigClientFactory.newClient();
@@ -65,8 +106,10 @@ body {
 		apigClient.legacyoneIdGet({'id': productId},'')
 			.then(function(result) {
 				document.getElementById("passed").style = "display:inline"
+				document.getElementById("verifiedText").style = "display:inline"
 				console.log('Success! ', result)
 			}).catch(function(result) {
+				document.getElementById("invalidText").style = "display:inline"
 				document.getElementById("failed").style = "display:inline"
 				console.log('Error! ', result)
 			});
