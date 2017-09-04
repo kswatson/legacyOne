@@ -103,7 +103,7 @@ Resources:
     Properties:
       RestApiId: !Ref Api
       ResourceId: !Ref LegacyOneIdResource
-      HttpMethod: 'GET'
+      HttpMethod: 'POST'
       AuthorizationType: 'NONE'
       RequestParameters:
         method.request.path.id : true
