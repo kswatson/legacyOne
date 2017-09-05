@@ -34,7 +34,7 @@ def handler(event, context):
       return respond(None, 409)
     else:
       dynamodb.put_item(TableName = table, Item = {'Id': {'N': id}, 'authenticatedAt': {'S': str(time.time())}})
-      respond(None, 204)
+      return respond(None, 204)
 
 def respond(err, code=200):
     return {

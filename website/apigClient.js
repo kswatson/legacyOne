@@ -53,7 +53,7 @@ apigClientFactory.newClient = function (config) {
 
     
     // extract endpoint and path from url
-    var invokeUrl = 'https://tumtxmqnw2.execute-api.ca-central-1.amazonaws.com/test';
+    var invokeUrl = 'https://nu1bv0tgb1.execute-api.ca-central-1.amazonaws.com/test';
     var endpoint = /(^https?:\/\/[^\/]+)/g.exec(invokeUrl)[1];
     var pathComponent = invokeUrl.substring(endpoint.length);
 
@@ -83,13 +83,13 @@ apigClientFactory.newClient = function (config) {
     
     
     
-    apigClient.legacyoneIdGet = function (params, body, additionalParams) {
+    apigClient.legacyoneIdPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
         apiGateway.core.utils.assertParametersDefined(params, ['id'], ['body']);
         
-        var legacyoneIdGetRequest = {
-            verb: 'get'.toUpperCase(),
+        var legacyoneIdPostRequest = {
+            verb: 'post'.toUpperCase(),
             path: pathComponent + uritemplate('/legacyone/{id}').expand(apiGateway.core.utils.parseParametersToObject(params, ['id'])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
             queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
@@ -97,7 +97,7 @@ apigClientFactory.newClient = function (config) {
         };
         
         
-        return apiGatewayClient.makeRequest(legacyoneIdGetRequest, authType, additionalParams, config.apiKey);
+        return apiGatewayClient.makeRequest(legacyoneIdPostRequest, authType, additionalParams, config.apiKey);
     };
     
     

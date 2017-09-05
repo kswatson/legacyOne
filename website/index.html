@@ -101,7 +101,7 @@ body {
 	  	  
 	  function validateProduct() {
 	    var productId = document.getElementById("prodId").value;
-		apigClient.legacyoneIdGet({'id': productId},'')
+		apigClient.legacyoneIdPost({'id': productId},'')
 			.then(function(result) {
 				document.getElementById("verifiedText").style = "display:inline"
 				console.log('Success! ', result)
