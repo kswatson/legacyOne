@@ -116,7 +116,7 @@ input.displayed {
 			}).catch(function(result) {
 				status = result.status
 				console.log('status', status)
-				if(status === 409) {
+				if(status === '409') {
 				  document.getElementById("alreadyAuthorizedText").style = "display:inline"
 				}else {
 				  document.getElementById("invalidText").style = "display:inline"
