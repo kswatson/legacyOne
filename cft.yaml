@@ -61,7 +61,7 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       Code:
-        S3Bucket: legacyone
+        S3Bucket: legacyone-code
         S3Key: lambda_function.zip
       Description: Validates LegacyOne product
       Handler: lambda_function.handler
