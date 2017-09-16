@@ -81,6 +81,7 @@ input.displayed {
 
 <div class="content">
   <div id="authCard">
+	<h2>Example Card</h2>
     <img class="displayed" src="AuthenticationCardBack.jpg" />
   </div>
   
@@ -112,17 +113,22 @@ input.displayed {
 			.then(function(result) {
 				document.getElementById("verifiedText").style = "display:inline"
 				document.getElementById("prodId").style = "background-color:#eafde8"
-				console.log('Success! ', result)
 			}).catch(function(result) {
 				status = result.status
-				console.log('status', status)
 				if(status === '409') {
+				  var body = JSON.parse(result.data.replace(/'/g, "\""))
+				  var warnText = "Your authentication code has been authenticated " + body.count + " times."
+				  document.getElementById("prodId").style = "background-color:#eafde8"
+				  if(body.count >= 4) {
+				    warnText = warnText + " Please be aware of counterfeits!"
+					document.getElementById("prodId").style = "background-color:#fde8e9"
+				  }
+				  document.getElementById("alreadyAuthorizedText").innerHTML = warnText
 				  document.getElementById("alreadyAuthorizedText").style = "display:inline"
 				}else {
+				  document.getElementById("prodId").style = "background-color:#fde8e9"
 				  document.getElementById("invalidText").style = "display:inline"
 				}
-				document.getElementById("prodId").style = "background-color:#fde8e9"
-				console.log('Error! ', result)
 			});
 	  }
 	</script>
